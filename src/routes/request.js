@@ -5,6 +5,7 @@ const ConnectionRequest=require ("../Models/connectRequest");
 const user = require("../Models/user");
 const ConnectRequestModel = require("../Models/connectRequest");
 const sendEmail= require("../utils/sendEmail");
+
 requestRouter.post("/request/send/:status/:toUserId",UserAuth, async (req, res)=>{
     try{
         const fromUserId=req.user._id;
@@ -43,8 +44,15 @@ requestRouter.post("/request/send/:status/:toUserId",UserAuth, async (req, res)=
 
         const data =await connectionRequest.save();
 
+        const emailRes=await sendEmail.run(
+            " A new friend request from "+ req.user.firstName, 
+            req.user.firstName + " is " + status + " in " + toUser.firstName
+        ); 
+        console.log(emailRes); 
+
+
         res.json({
-            message:"connection request is sent",
+            message: req.user.firstName + " is " + status + " in " + toUser.firstName,
             data,
         });
 
@@ -79,9 +87,6 @@ requestRouter.post("/request/review/:status/:requestId", UserAuth,
             }
             connectionRequest.status=status;  
             const data = await connectionRequest.save();
-
-            const emailRes=await sendEmail.run(); 
-            console.log(emailRes); 
 
             
             res.json({message:"connection request not found"+status, data}); 

@@ -15,7 +15,7 @@ userRouter.get("/user/request/recieved", UserAuth, async (req, res)=>{
             status:"interested",
         }).populate(
             "fromUserId",
-             "firstName lastName age gender about"
+             "firstName lastName age gender about photoUrl"
         );
 
          res.json({
@@ -36,7 +36,8 @@ userRouter.get("/user/connections", UserAuth, async(req, res)=>{
                 {toUserId: loggedInuser._id , status:"accepted"},
                 {fromUserId: loggedInuser._id , status:"accepted"}
             ],
-        }).populate("fromUserId",USER_SAFE_DATA);
+        }).populate("fromUserId",USER_SAFE_DATA)
+        .populate("toUserId", USER_SAFE_DATA);
 
         const data=connectionRequests.map((row)=>{
             if(row.fromUserId._id.toString()===loggedInuser._id.toString()){
@@ -50,7 +51,7 @@ userRouter.get("/user/connections", UserAuth, async(req, res)=>{
     {
         res.status(400).send("ERROR"+ err.message);
     }
-})
+});
 
 userRouter.get("/feed", UserAuth, async(req, res)=>{
     try{

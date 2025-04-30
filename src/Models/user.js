@@ -53,7 +53,15 @@ const userSchema= new mongoose.Schema({
         type:String,
         default: "https://cdn-icons-png.flaticon.com/512/847/847969.png"
 
+    },
+    isPremium:{
+      type: Boolean,
+      default: false
+    },
+    membershipType:{
+      type: String,
     }
+
 });
 userSchema.methods.getJWT=async function(){
     const user =this;
